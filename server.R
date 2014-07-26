@@ -12,23 +12,11 @@ shinyServer(function(input, output) {
         #
         datasetInput <- reactive({
                 switch(input$dataset,
-                       "iris" = iris,
-                       "mtcars" = mtcars,
-                       input$view)
+                        "iris" = iris,
+                        "mtcars" = mtcars,
+                        input$view)
         })
-        
-        # The output$caption is computed based on a reactive expression that
-        # returns input$caption. When the user changes the "caption" field:
-        #
-        #  1) This expression is automatically called to recompute the output 
-        #  2) The new caption is pushed back to the browser for re-display
-        # 
-        # Note that because the data-oriented reactive expressions below don't 
-        # depend on input$caption, those expressions are NOT called when 
-        # input$caption changes.
-        output$caption <- renderText({
-                input$caption
-                        })
+        # output for the dataset display.
         output$rows <- renderText({
                 input$view
         })
@@ -39,16 +27,13 @@ shinyServer(function(input, output) {
                 {tail(datasetInput(), n = input$obs) 
                 }
         })
-        # The output$summary depends on the datasetInput reactive expression, 
-        # so will be re-executed whenever datasetInput is invalidated
-        # (i.e. whenever the input$dataset changes)
-        output$summary <- renderPrint({
-                dataset <- datasetInput()
-                summary(dataset)
-                
-                
-        })
-
+        output$dataset <- renderPrint({input$dataset})
+        output$obs <- renderPrint({input$obs})
         
-
+        # output for the Water consumption prediction.
+        output$temperature <- renderPrint({input$temperature})
+        output$time <- renderPrint({input$time})
+        output$prediction <- renderPrint({
+                (- 122 + 1.51*input$temperature + 12.5 * input$time)})
+        
 })
